@@ -16,8 +16,15 @@ VOLUME_PRIORITY_DESC = (
 
 
 def update_grin_preview(self, context):
+    if self.use_uniform_gamma:
+        # propagate uniform gamma to individual axes without triggering updates
+        self["gamma_x"] = self.uniform_gamma
+        self["gamma_y"] = self.uniform_gamma
+        self["gamma_z"] = self.uniform_gamma
+
     self.generate_preview()
     utils_node.force_viewport_update(self, context)
+
 
 
 class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
@@ -97,6 +104,7 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
 
         self.outputs.new("LuxCoreSocketVolume", "Volume")
 
+
     def generate_preview(self):
         if not hasattr(self, "_preview_collection"):
             self._preview_collection = bpy.utils.previews.new()
@@ -130,11 +138,16 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
         img.file_format = 'PNG'
         img.save()
 
+        # refresh the preview thumbnail
+        if "preview" in self._preview_collection:
+            self._preview_collection.clear()
         self._preview_collection.load("preview", filepath, 'IMAGE')
 
     def free(self):
+        super().free()
         if hasattr(self, "_preview_collection"):
             bpy.utils.previews.remove(self._preview_collection)
+            self._preview_collection = None
         img_name = f"grin_preview_{self.as_pointer()}"
         if img_name in bpy.data.images:
             bpy.data.images.remove(bpy.data.images[img_name])
