@@ -1,0 +1,3 @@
+/home/runner/work/BlendLuxCore/BlendLuxCore/build/CMakeFiles/extension.dir
+/home/runner/work/BlendLuxCore/BlendLuxCore/build/CMakeFiles/edit_cache.dir
+/home/runner/work/BlendLuxCore/BlendLuxCore/build/CMakeFiles/rebuild_cache.dir

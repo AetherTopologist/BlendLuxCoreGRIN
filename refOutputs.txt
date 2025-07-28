@@ -1,0 +1,644 @@
+[Engine/Viewport] New session
+[Exporter] Creating session
+[SDL][3854.890] Define ImageMap: NamedObject
+
+[SDL][3854.890] Camera type: perspective
+
+[SDL][3854.890] Camera position: Point[0, -0.434829, 0.02]
+
+[SDL][3854.890] Camera target: Point[-0.0069786, 0.564756, -0.0079217]
+
+[SDL][3854.890] Camera clipping plane disabled
+
+[SDL][3854.890] Material definition: 2761744992288
+
+[SDL][3854.890] Scene objects count: 1
+
+[SDL][3854.890] Light definition: __WORLD_BACKGROUND_LIGHT__
+
+[SDL][3854.890] Reading texture map: C:\Users\wmbro\LocalDocuments\Modeling\BLENDER_4LUX\..\_Textures\dc8onwn-3d16da96-821d-4718-a341-d4718591da64.jpg
+
+[SDL][3854.890] Mip map available: [800x600]
+
+[SDL][3854.890] Reading mip map level: 0
+
+[LuxCore][3854.890] Configuration:
+
+[LuxCore][3854.890]   path.pathdepth.total = 13
+
+[LuxCore][3854.890]   path.pathdepth.diffuse = 5
+
+[LuxCore][3854.890]   path.pathdepth.glossy = 5
+
+[LuxCore][3854.890]   path.pathdepth.specular = 12
+
+[LuxCore][3854.890]   path.hybridbackforward.enable = 1
+
+[LuxCore][3854.890]   path.hybridbackforward.partition = 0.0609137
+
+[LuxCore][3854.890]   path.hybridbackforward.glossinessthreshold = 0.049
+
+[LuxCore][3854.890]   sampler.sobol.adaptive.strength = 0
+
+[LuxCore][3854.890]   opencl.cpu.use = 0
+
+[LuxCore][3854.890]   opencl.gpu.use = 1
+
+[LuxCore][3854.890]   opencl.devices.select = "11"
+
+[LuxCore][3854.890]   renderengine.type = "PATHOCL"
+
+[LuxCore][3854.890]   sampler.type = "SOBOL"
+
+[LuxCore][3854.890]   film.width = 748
+
+[LuxCore][3854.890]   film.height = 444
+
+[LuxCore][3854.890]   film.filter.type = "NONE"
+
+[LuxCore][3854.890]   film.filter.width = 1.5
+
+[LuxCore][3854.890]   lightstrategy.type = "LOG_POWER"
+
+[LuxCore][3854.890]   scene.epsilon.min = 1e-05
+
+[LuxCore][3854.890]   scene.epsilon.max = 0.1
+
+[LuxCore][3854.890]   path.albedospecular.type = "REFLECT_TRANSMIT"
+
+[LuxCore][3854.890]   path.albedospecular.glossinessthreshold = 0.05
+
+[LuxCore][3854.890]   film.opencl.enable = 1
+
+[LuxCore][3854.890]   film.opencl.device = 0
+
+[LuxCore][3854.890]   path.forceblackbackground.enable = 0
+
+[LuxCore][3854.890]   renderengine.seed = 1
+
+[LuxCore][3854.890]   film.outputs.0.type = "RGB_IMAGEPIPELINE"
+
+[LuxCore][3854.890]   film.outputs.0.index = 0
+
+[LuxCore][3854.890]   film.outputs.0.filename = "RGB_IMAGEPIPELINE_0.png"
+
+[LuxCore][3854.890]   film.outputs.1.type = "ALBEDO"
+
+[LuxCore][3854.890]   film.outputs.1.filename = "ALBEDO.exr"
+
+[LuxCore][3854.890]   film.outputs.2.type = "AVG_SHADING_NORMAL"
+
+[LuxCore][3854.890]   film.outputs.2.filename = "AVG_SHADING_NORMAL.exr"
+
+[LuxCore][3854.890]   film.imagepipelines.000.0.type = "NOP"
+
+[LuxCore][3854.890]   film.imagepipelines.000.1.type = "TONEMAP_LINEAR"
+
+[LuxCore][3854.890]   film.imagepipelines.000.1.scale = 1
+
+[LuxCore][3854.890]   film.imagepipelines.000.radiancescales.0.enabled = 1
+
+[LuxCore][3854.890]   film.imagepipelines.000.radiancescales.0.globalscale = 1
+
+[LuxCore][3854.890]   film.imagepipelines.000.radiancescales.0.rgbscale = 1 1 1
+
+[LuxCore][3854.890]   batch.haltspp = 0 0
+
+[LuxCore][3854.890]   batch.halttime = 0
+
+[LuxCore][3854.890] File Name Resolver Configuration:
+
+Export took 0.0 s
+[LuxCore][3854.906] Film resolution: 748x444
+
+[SDL][3854.906] Film output definition: RGB_IMAGEPIPELINE [image.png]
+
+[SDL][3854.906] Image pipeline: film.imagepipelines.000
+
+[SDL][3854.906] Image pipeline step 0: NOP
+
+[SDL][3854.906] Image pipeline step 1: TONEMAP_LINEAR
+
+[SDL][3854.906] Film output definition: RGB_IMAGEPIPELINE [RGB_IMAGEPIPELINE_0.png]
+
+[SDL][3854.906] Film output definition: ALBEDO [ALBEDO.exr]
+
+[SDL][3854.906] Film output definition: AVG_SHADING_NORMAL [AVG_SHADING_NORMAL.exr]
+
+[LuxRays][3854.906] OpenCL support: enabled
+
+[LuxRays][3854.906] OpenCL Platform 0: AMD Accelerated Parallel Processing
+
+[LuxRays][3854.906] CUDA support: enabled
+
+[LuxRays][3854.906] Device 0 name: Native
+
+[LuxRays][3854.906] Device 0 type: NATIVE_THREAD
+
+[LuxRays][3854.906] Device 0 compute units: 1
+
+[LuxRays][3854.906] Device 0 preferred float vector width: 4
+
+[LuxRays][3854.906] Device 0 max allocable memory: 17592186044415MBytes
+
+[LuxRays][3854.906] Device 0 max allocable memory block size: 17592186044415MBytes
+
+[LuxRays][3854.906] Device 0 has out of core memory support: 0
+
+[LuxRays][3854.906] Device 1 name: gfx1031
+
+[LuxRays][3854.906] Device 1 type: OPENCL_GPU
+
+[LuxRays][3854.906] Device 1 compute units: 20
+
+[LuxRays][3854.906] Device 1 preferred float vector width: 1
+
+[LuxRays][3854.906] Device 1 max allocable memory: 12272MBytes
+
+[LuxRays][3854.906] Device 1 max allocable memory block size: 10431MBytes
+
+[LuxRays][3854.906] Device 1 has out of core memory support: 0
+
+[LuxRays][3854.906] Device 2 name: gfx1036
+
+[LuxRays][3854.906] Device 2 type: OPENCL_GPU
+
+[LuxRays][3854.906] Device 2 compute units: 1
+
+[LuxRays][3854.906] Device 2 preferred float vector width: 1
+
+[LuxRays][3854.906] Device 2 max allocable memory: 18615MBytes
+
+[LuxRays][3854.906] Device 2 max allocable memory block size: 15387MBytes
+
+[LuxRays][3854.906] Device 2 has out of core memory support: 0
+
+[LuxRays][3854.906] Creating 26 intersection device(s)
+
+[LuxRays][3854.906] Allocating intersection device 0: gfx1031 (Type = OPENCL_GPU)
+
+[LuxRays][3854.906] Allocating intersection device 1: gfx1036 (Type = OPENCL_GPU)
+
+[LuxRays][3854.906] Allocating intersection device 2: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 3: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 4: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 5: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 6: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 7: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 8: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 9: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 10: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 11: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 12: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 13: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 14: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 15: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 16: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 17: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 18: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 19: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 20: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 21: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 22: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 23: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 24: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.906] Allocating intersection device 25: Native (Type = NATIVE_THREAD)
+
+[LuxCore][3854.906] CUDA devices used:
+
+[LuxCore][3854.906] OpenCL devices used:
+
+[LuxCore][3854.906] [gfx1031 OpenCLIntersect]
+
+[LuxCore][3854.906]   Device OpenCL version: OpenCL 2.0 AMD-APP (3628.0)
+
+[LuxCore][3854.906] [gfx1036 OpenCLIntersect]
+
+[LuxCore][3854.906]   Device OpenCL version: OpenCL 2.0 AMD-APP (3628.0)
+
+[LuxCore][3854.906] Native devices used: 24
+
+[LuxCore][3854.906] Configuring 2 OpenCL render threads
+
+[LuxCore][3854.906] Configuring 24 native render threads
+
+[LuxRays][3854.906] Preprocessing DataSet
+
+[LuxRays][3854.906] Total vertex count: 24
+
+[LuxRays][3854.906] Total triangle count: 12
+
+[LuxRays][3854.906] Preprocessing DataSet done
+
+[LuxRays][3854.906] Adding DataSet accelerator: MBVH
+
+[LuxRays][3854.906] Total vertex count: 24
+
+[LuxRays][3854.906] Total triangle count: 12
+
+[LuxRays][3854.906] Building Multilevel Bounding Volume Hierarchy: 1 leafs
+
+[LuxRays][3854.906] BVH Dataset preprocessing time: 0ms
+
+[LuxRays][3854.906] BVH builder: EMBREE_BINNED_SAH
+
+[LuxRays][3854.906] BVH build hierarchy time: 0ms
+
+[LuxRays][3854.906] BVH total build time: 0ms
+
+[LuxRays][3854.906] Total BVH memory usage: 0Kbytes
+
+[LuxRays][3854.906] Building Multilevel Bounding Volume Hierarchy root tree
+
+[LuxRays][3854.906] MBVH root tree builder: EMBREE_BINNED_SAH
+
+[LuxRays][3854.906] MBVH build time: 0ms
+
+[LuxRays][3854.906] Total Multilevel BVH memory usage: 0Kbytes
+
+[LuxRays][3854.906] Adding DataSet accelerator: EMBREE
+
+[LuxRays][3854.906] Total vertex count: 24
+
+[LuxRays][3854.906] Total triangle count: 12
+
+[LuxRays][3854.906] EmbreeAccel build time: 0ms
+
+[LuxRays][3854.906] [Device gfx1031 OpenCLIntersect] MBVH mesh vertices buffer size: 288bytes
+
+[LuxRays][3854.906] [Device gfx1031 OpenCLIntersect] MBVH nodes buffer size: 640bytes
+
+[LuxRays][3854.906] [Device gfx1031 OpenCLIntersect] MBVH leaf transformations buffer size: 64bytes
+
+[LuxRays][3854.906] [MBVHKernel] Compiler options: -D LUXRAYS_OPENCL_KERNEL -D PARAM_RAY_EPSILON_MIN=1e-05f -D PARAM_RAY_EPSILON_MAX=0.1f -D LUXRAYS_OPENCL_DEVICE -D LUXRAYS_OS_WINDOWS -cl-fast-relaxed-math -cl-mad-enable
+
+[LuxRays][3854.906] [MBVHKernel] Compiling kernels
+
+[LuxRays][3854.906] [MBVHKernel] Program cached
+
+[LuxRays][3854.906] WARNING: there is a memory leak in LuxRays HardwareDevice gfx1031 OpenCLIntersect: 992bytes
+
+ERROR: OpenCL driver API error (code: -6, file:D:\a\LuxCoreGRIN\LuxCoreGRIN\src\luxrays\devices\ocldevice.cpp, line: 143): CL_OUT_OF_HOST_MEMORY
+
+Traceback (most recent call last):
+  File "C:\Users\wmbro\AppData\Roaming\Blender Foundation\Blender\4.2\extensions\user_default\BlendLuxCore\engine\viewport.py", line 16, in start_session
+    engine.session.Start()
+RuntimeError: OpenCL driver API error (code: -6, file:D:\a\LuxCoreGRIN\LuxCoreGRIN\src\luxrays\devices\ocldevice.cpp, line: 143): CL_OUT_OF_HOST_MEMORY
+
+[SDL][3854.921] Define ImageMap: NamedObject
+
+[SDL][3854.921] Camera type: perspective
+
+[SDL][3854.921] Camera position: Point[0, 0, 0]
+
+[SDL][3854.921] Camera target: Point[0, 0, 0]
+
+[SDL][3854.921] Camera clipping plane disabled
+
+[LuxCore][3854.921] Configuration:
+
+[LuxCore][3854.921]   renderengine.type = "RTPATHOCL"
+
+[LuxCore][3854.921]   sampler.type = "TILEPATHSAMPLER"
+
+[LuxCore][3854.921]   scene.epsilon.min = 1e-05
+
+[LuxCore][3854.921]   scene.epsilon.max = 0.1
+
+[LuxCore][3854.921]   opencl.devices.select = "11"
+
+[LuxCore][3854.921] File Name Resolver Configuration:
+
+==================================================
+[Engine/Viewport] New session
+[Exporter] Creating session
+[SDL][3854.937] Define ImageMap: NamedObject
+
+[SDL][3854.937] Camera type: perspective
+
+[SDL][3854.937] Camera position: Point[0, -0.434829, 0.02]
+
+[SDL][3854.937] Camera target: Point[-0.0069786, 0.564756, -0.0079217]
+
+[SDL][3854.937] Camera clipping plane disabled
+
+[SDL][3854.937] Material definition: 2761744992288
+
+[SDL][3854.937] Scene objects count: 1
+
+[SDL][3854.937] Light definition: __WORLD_BACKGROUND_LIGHT__
+
+[SDL][3854.937] Reading texture map: C:\Users\wmbro\LocalDocuments\Modeling\BLENDER_4LUX\..\_Textures\dc8onwn-3d16da96-821d-4718-a341-d4718591da64.jpg
+
+[SDL][3854.937] Mip map available: [800x600]
+
+[SDL][3854.937] Reading mip map level: 0
+
+[LuxCore][3854.937] Configuration:
+
+[LuxCore][3854.937]   path.pathdepth.total = 13
+
+[LuxCore][3854.937]   path.pathdepth.diffuse = 5
+
+[LuxCore][3854.937]   path.pathdepth.glossy = 5
+
+[LuxCore][3854.937]   path.pathdepth.specular = 12
+
+[LuxCore][3854.937]   path.hybridbackforward.enable = 1
+
+[LuxCore][3854.937]   path.hybridbackforward.partition = 0.0609137
+
+[LuxCore][3854.937]   path.hybridbackforward.glossinessthreshold = 0.049
+
+[LuxCore][3854.937]   sampler.sobol.adaptive.strength = 0
+
+[LuxCore][3854.937]   opencl.cpu.use = 0
+
+[LuxCore][3854.937]   opencl.gpu.use = 1
+
+[LuxCore][3854.937]   opencl.devices.select = "11"
+
+[LuxCore][3854.937]   renderengine.type = "PATHOCL"
+
+[LuxCore][3854.937]   sampler.type = "SOBOL"
+
+[LuxCore][3854.937]   film.width = 748
+
+[LuxCore][3854.937]   film.height = 444
+
+[LuxCore][3854.937]   film.filter.type = "NONE"
+
+[LuxCore][3854.937]   film.filter.width = 1.5
+
+[LuxCore][3854.937]   lightstrategy.type = "LOG_POWER"
+
+[LuxCore][3854.937]   scene.epsilon.min = 1e-05
+
+[LuxCore][3854.937]   scene.epsilon.max = 0.1
+
+[LuxCore][3854.937]   path.albedospecular.type = "REFLECT_TRANSMIT"
+
+[LuxCore][3854.937]   path.albedospecular.glossinessthreshold = 0.05
+
+[LuxCore][3854.937]   film.opencl.enable = 1
+
+[LuxCore][3854.937]   film.opencl.device = 0
+
+[LuxCore][3854.937]   path.forceblackbackground.enable = 0
+
+[LuxCore][3854.937]   renderengine.seed = 1
+
+[LuxCore][3854.937]   film.outputs.0.type = "RGB_IMAGEPIPELINE"
+
+[LuxCore][3854.937]   film.outputs.0.index = 0
+
+[LuxCore][3854.937]   film.outputs.0.filename = "RGB_IMAGEPIPELINE_0.png"
+
+[LuxCore][3854.937]   film.outputs.1.type = "ALBEDO"
+
+[LuxCore][3854.937]   film.outputs.1.filename = "ALBEDO.exr"
+
+[LuxCore][3854.937]   film.outputs.2.type = "AVG_SHADING_NORMAL"
+
+[LuxCore][3854.937]   film.outputs.2.filename = "AVG_SHADING_NORMAL.exr"
+
+[LuxCore][3854.937]   film.imagepipelines.000.0.type = "NOP"
+
+[LuxCore][3854.937]   film.imagepipelines.000.1.type = "TONEMAP_LINEAR"
+
+[LuxCore][3854.937]   film.imagepipelines.000.1.scale = 1
+
+[LuxCore][3854.937]   film.imagepipelines.000.radiancescales.0.enabled = 1
+
+[LuxCore][3854.937]   film.imagepipelines.000.radiancescales.0.globalscale = 1
+
+[LuxCore][3854.937]   film.imagepipelines.000.radiancescales.0.rgbscale = 1 1 1
+
+[LuxCore][3854.937]   batch.haltspp = 0 0
+
+[LuxCore][3854.937]   batch.halttime = 0
+
+[LuxCore][3854.937] File Name Resolver Configuration:
+
+Export took 0.0 s
+[LuxCore][3854.953] Film resolution: 748x444
+
+[SDL][3854.953] Film output definition: RGB_IMAGEPIPELINE [image.png]
+
+[SDL][3854.953] Image pipeline: film.imagepipelines.000
+
+[SDL][3854.953] Image pipeline step 0: NOP
+
+[SDL][3854.953] Image pipeline step 1: TONEMAP_LINEAR
+
+[SDL][3854.953] Film output definition: RGB_IMAGEPIPELINE [RGB_IMAGEPIPELINE_0.png]
+
+[SDL][3854.953] Film output definition: ALBEDO [ALBEDO.exr]
+
+[SDL][3854.953] Film output definition: AVG_SHADING_NORMAL [AVG_SHADING_NORMAL.exr]
+
+[LuxRays][3854.953] OpenCL support: enabled
+
+[LuxRays][3854.953] OpenCL Platform 0: AMD Accelerated Parallel Processing
+
+[LuxRays][3854.953] CUDA support: enabled
+
+[LuxRays][3854.953] Device 0 name: Native
+
+[LuxRays][3854.953] Device 0 type: NATIVE_THREAD
+
+[LuxRays][3854.953] Device 0 compute units: 1
+
+[LuxRays][3854.953] Device 0 preferred float vector width: 4
+
+[LuxRays][3854.953] Device 0 max allocable memory: 17592186044415MBytes
+
+[LuxRays][3854.953] Device 0 max allocable memory block size: 17592186044415MBytes
+
+[LuxRays][3854.953] Device 0 has out of core memory support: 0
+
+[LuxRays][3854.953] Device 1 name: gfx1031
+
+[LuxRays][3854.953] Device 1 type: OPENCL_GPU
+
+[LuxRays][3854.953] Device 1 compute units: 20
+
+[LuxRays][3854.953] Device 1 preferred float vector width: 1
+
+[LuxRays][3854.953] Device 1 max allocable memory: 12272MBytes
+
+[LuxRays][3854.953] Device 1 max allocable memory block size: 10431MBytes
+
+[LuxRays][3854.953] Device 1 has out of core memory support: 0
+
+[LuxRays][3854.953] Device 2 name: gfx1036
+
+[LuxRays][3854.953] Device 2 type: OPENCL_GPU
+
+[LuxRays][3854.953] Device 2 compute units: 1
+
+[LuxRays][3854.953] Device 2 preferred float vector width: 1
+
+[LuxRays][3854.953] Device 2 max allocable memory: 18615MBytes
+
+[LuxRays][3854.953] Device 2 max allocable memory block size: 15387MBytes
+
+[LuxRays][3854.953] Device 2 has out of core memory support: 0
+
+[LuxRays][3854.953] Creating 26 intersection device(s)
+
+[LuxRays][3854.953] Allocating intersection device 0: gfx1031 (Type = OPENCL_GPU)
+
+[LuxRays][3854.953] Allocating intersection device 1: gfx1036 (Type = OPENCL_GPU)
+
+[LuxRays][3854.953] Allocating intersection device 2: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 3: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 4: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 5: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 6: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 7: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 8: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 9: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 10: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 11: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 12: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 13: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 14: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 15: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 16: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 17: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 18: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 19: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 20: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 21: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 22: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 23: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 24: Native (Type = NATIVE_THREAD)
+
+[LuxRays][3854.953] Allocating intersection device 25: Native (Type = NATIVE_THREAD)
+
+[LuxCore][3854.953] CUDA devices used:
+
+[LuxCore][3854.953] OpenCL devices used:
+
+[LuxCore][3854.953] [gfx1031 OpenCLIntersect]
+
+[LuxCore][3854.953]   Device OpenCL version: OpenCL 2.0 AMD-APP (3628.0)
+
+[LuxCore][3854.953] [gfx1036 OpenCLIntersect]
+
+[LuxCore][3854.953]   Device OpenCL version: OpenCL 2.0 AMD-APP (3628.0)
+
+[LuxCore][3854.953] Native devices used: 24
+
+[LuxCore][3854.953] Configuring 2 OpenCL render threads
+
+[LuxCore][3854.953] Configuring 24 native render threads
+
+[LuxRays][3854.953] Preprocessing DataSet
+
+[LuxRays][3854.953] Total vertex count: 24
+
+[LuxRays][3854.953] Total triangle count: 12
+
+[LuxRays][3854.953] Preprocessing DataSet done
+
+[LuxRays][3854.953] Adding DataSet accelerator: MBVH
+
+[LuxRays][3854.953] Total vertex count: 24
+
+[LuxRays][3854.953] Total triangle count: 12
+
+[LuxRays][3854.953] Building Multilevel Bounding Volume Hierarchy: 1 leafs
+
+[LuxRays][3854.953] BVH Dataset preprocessing time: 0ms
+
+[LuxRays][3854.953] BVH builder: EMBREE_BINNED_SAH
+
+[LuxRays][3854.953] BVH build hierarchy time: 0ms
+
+[LuxRays][3854.953] BVH total build time: 0ms
+
+[LuxRays][3854.953] Total BVH memory usage: 0Kbytes
+
+[LuxRays][3854.953] Building Multilevel Bounding Volume Hierarchy root tree
+
+[LuxRays][3854.953] MBVH root tree builder: EMBREE_BINNED_SAH
+
+[LuxRays][3854.953] MBVH build time: 0ms
+
+[LuxRays][3854.953] Total Multilevel BVH memory usage: 0Kbytes
+
+[LuxRays][3854.953] Adding DataSet accelerator: EMBREE
+
+[LuxRays][3854.953] Total vertex count: 24
+
+[LuxRays][3854.953] Total triangle count: 12
+
+[LuxRays][3854.953] EmbreeAccel build time: 0ms
+
+[LuxRays][3854.953] [Device gfx1031 OpenCLIntersect] MBVH mesh vertices buffer size: 288bytes
+
+[LuxRays][3854.953] [Device gfx1031 OpenCLIntersect] MBVH nodes buffer size: 640bytes
+
+[LuxRays][3854.953] [Device gfx1031 OpenCLIntersect] MBVH leaf transformations buffer size: 64bytes
+
+[LuxRays][3854.953] [MBVHKernel] Compiler options: -D LUXRAYS_OPENCL_KERNEL -D PARAM_RAY_EPSILON_MIN=1e-05f -D PARAM_RAY_EPSILON_MAX=0.1f -D LUXRAYS_OPENCL_DEVICE -D LUXRAYS_OS_WINDOWS -cl-fast-relaxed-math -cl-mad-enable
+
+[LuxRays][3854.953] [MBVHKernel] Compiling kernels
+
+[LuxRays][3854.953] [MBVHKernel] Program cached
+
+Exception ignored in thread started by: <function start_session at 0x000002833D3A4FE0>
+Traceback (most recent call last):
+  File "C:\Users\wmbro\AppData\Roaming\Blender Foundation\Blender\4.2\extensions\user_default\BlendLuxCore\engine\viewport.py", line 23, in start_session
+    engine.session = None
+    ^^^^^^^^^^^^^^
+ReferenceError: StructRNA of type LuxCoreRenderEngine has been removed
+[Engine] del: RenderEngine struct was already deleted
+[LuxRays][3854.968] WARNING: there is a memory leak in LuxRays HardwareDevice gfx1031 OpenCLIntersect: 992bytes
