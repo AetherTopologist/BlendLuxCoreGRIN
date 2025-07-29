@@ -9,11 +9,13 @@ from ...utils import node as utils_node
 from ...utils.light_descriptions import LIGHTGROUP_DESC
 import bpy.utils.previews
 
+# keep track of previews for cleanup when the add-on is reloaded
+_preview_store = {}
+
 VOLUME_PRIORITY_DESC = (
     "In areas where two or more volumes overlap, the volume with the highest "
     "priority number will be chosen and completely replace all other volumes"
 )
-
 
 def update_grin_preview(self, context):
     if self.use_uniform_gamma:
@@ -24,7 +26,6 @@ def update_grin_preview(self, context):
 
     self.generate_preview()
     utils_node.force_viewport_update(self, context)
-
 
 
 class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
@@ -100,14 +101,16 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
     def init(self, context):
         self.add_common_inputs()
         self._preview_collection = bpy.utils.previews.new()
-        self.generate_preview()
+        _preview_store[self.as_pointer()] = self._preview_collection
+        self.generate_preview()        
 
         self.outputs.new("LuxCoreSocketVolume", "Volume")
 
 
     def generate_preview(self):
-        if not hasattr(self, "_preview_collection"):
+        if not hasattr(self, "_preview_collection") or self._preview_collection is None:
             self._preview_collection = bpy.utils.previews.new()
+            _preview_store[self.as_pointer()] = self._preview_collection
 
         width = height = 64
         img_name = f"grin_preview_{self.as_pointer()}"
@@ -142,12 +145,24 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
         if "preview" in self._preview_collection:
             self._preview_collection.clear()
         self._preview_collection.load("preview", filepath, 'IMAGE')
+        # remove the temporary file once loaded
+        try:
+            os.remove(filepath)
+        except OSError:
+            pass
 
     def free(self):
         super().free()
-        if hasattr(self, "_preview_collection"):
-            bpy.utils.previews.remove(self._preview_collection)
-            self._preview_collection = None
+        ptr = self.as_pointer()
+        collection = _preview_store.pop(ptr, None)
+        if collection is None and hasattr(self, "_preview_collection"):
+            collection = self._preview_collection
+        if collection:
+            try:
+                bpy.utils.previews.remove(collection)
+            except Exception:
+                pass
+        self._preview_collection = None
         img_name = f"grin_preview_{self.as_pointer()}"
         if img_name in bpy.data.images:
             bpy.data.images.remove(bpy.data.images[img_name])
@@ -194,3 +209,20 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
         }
         self.export_common_inputs(exporter, depsgraph, props, definitions)
         return self.create_props(props, definitions, luxcore_name)
+
+
+def unregister_previews():
+    for col in list(_preview_store.values()):
+        try:
+            bpy.utils.previews.remove(col)
+        except Exception:
+            pass
+    _preview_store.clear()
+
+
+def register():
+    pass
+
+
+def unregister():
+    unregister_previews()

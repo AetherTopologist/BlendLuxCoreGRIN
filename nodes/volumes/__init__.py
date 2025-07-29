@@ -17,9 +17,12 @@ def register():
 
     for cls in classes:
         register_class(cls)
+    grin.register()
+
 
 def unregister():
     nodeitems_utils.unregister_node_categories("LUXCORE_VOLUME_TREE")
 
     for cls in classes:
         unregister_class(cls)
+    grin.unregister()
