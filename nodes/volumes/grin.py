@@ -1,16 +1,27 @@
-import os
-
 import bpy
-from bpy.props import IntProperty, FloatProperty, StringProperty, BoolProperty
+from bpy.props import (
+    IntProperty,
+    FloatProperty,
+    StringProperty,
+    BoolProperty,
+    PointerProperty,
+    EnumProperty,
+)
 
 from .. import COLORDEPTH_DESC
 from ..base import LuxCoreNodeVolume
 from ...utils import node as utils_node
 from ...utils.light_descriptions import LIGHTGROUP_DESC
-import bpy.utils.previews
 
-# keep track of previews for cleanup when the add-on is reloaded
-_preview_store = {}
+# keep track of preview image datablocks for cleanup
+_preview_images = set()
+
+PROFILE_ITEMS = [
+    ("POWER", "Power", "Power profile"),
+    ("LOG10", "Log10", "Log10 profile"),
+    ("LOGE", "LogE", "Natural Log profile"),
+    ("EXPONENTIAL", "Exponential", "Exponential profile"),
+]
 
 VOLUME_PRIORITY_DESC = (
     "In areas where two or more volumes overlap, the volume with the highest "
@@ -18,14 +29,23 @@ VOLUME_PRIORITY_DESC = (
 )
 
 def update_grin_preview(self, context):
-    if self.use_uniform_gamma:
-        # propagate uniform gamma to individual axes without triggering updates
-        self["gamma_x"] = self.uniform_gamma
-        self["gamma_y"] = self.uniform_gamma
-        self["gamma_z"] = self.uniform_gamma
+    if self.use_advanced_mode:
+        if self.use_uniform_gamma:
+            # propagate uniform gamma to individual axes without triggering updates
+            self["gamma_x"] = self.uniform_gamma
+            self["gamma_y"] = self.uniform_gamma
+            self["gamma_z"] = self.uniform_gamma
+    else:
+        # Simple mode uses fixed beta/gamma values
+        self["beta"] = 2.0
+        self["uniform_gamma"] = 1.0
+        self["gamma_x"] = 1.0
+        self["gamma_y"] = 1.0
+        self["gamma_z"] = 1.0
 
     self.generate_preview()
     utils_node.force_viewport_update(self, context)
+
 
 
 class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
@@ -40,20 +60,45 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
                                 description=COLORDEPTH_DESC)
     lightgroup: StringProperty(update=utils_node.force_viewport_update, name="Light Group", description=LIGHTGROUP_DESC)
 
-    n0: FloatProperty(update=utils_node.force_viewport_update,
-                        name='IOR n₀',
-                        default=1.0, min=0.1,
-                        description="Refractive index at the center (n₀)")
-    
-    nr: FloatProperty(update=utils_node.force_viewport_update,
-                        name='IOR n.r',
-                        default=1.0, min=0.1,
-                        description="Refractive index at the center (n.r)")
-    
-    radius: FloatProperty(update=utils_node.force_viewport_update,
-                        name='Radius',
-                        default=10.0, min=0.001,
-                        description="Radius for experiment spherical GRIN effect")
+    use_advanced_mode: BoolProperty(
+        name="Advanced GRIN Control",
+        default=False,
+        description=(
+            "Enable manual gamma/beta control instead of automatic IOR-radius mapping"
+        ),
+        update=update_grin_preview,
+    )
+
+    ior_center: FloatProperty(
+        update=update_grin_preview,
+        name="IOR Center",
+        default=1.0,
+        min=0.1,
+        description="Refractive index at the center",
+    )
+
+    ior_radius: FloatProperty(
+        update=update_grin_preview,
+        name="IOR Edge",
+        default=1.0,
+        min=0.1,
+        description="Refractive index at the edge",
+    )
+
+    radius_max: FloatProperty(
+        update=update_grin_preview,
+        name="Radius",
+        default=10.0,
+        min=0.001,
+        description="Maximum radius for the GRIN field",
+    )
+
+    profile_type: EnumProperty(
+        name="Profile Type",
+        items=PROFILE_ITEMS,
+        default="POWER",
+        update=update_grin_preview,
+    )
 
     ###################################
     #xPRIMEray Properties
@@ -87,6 +132,8 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
                           default=1.0, min=0.1,
                           description="Exponent curvature in Z direction")
 
+    preview_image: PointerProperty(type=bpy.types.Image)
+
     stepSize: FloatProperty(update=utils_node.force_viewport_update,
                         name='RK4 Curve Step Size',
                         default=0.01, min=0.00001,
@@ -100,129 +147,149 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
 
     def init(self, context):
         self.add_common_inputs()
-        self._preview_collection = bpy.utils.previews.new()
-        _preview_store[self.as_pointer()] = self._preview_collection
-        self.generate_preview()        
+        self._preview_image = None
+        self.generate_preview()
 
         self.outputs.new("LuxCoreSocketVolume", "Volume")
 
-
     def generate_preview(self):
-        if not hasattr(self, "_preview_collection") or self._preview_collection is None:
-            self._preview_collection = bpy.utils.previews.new()
-            _preview_store[self.as_pointer()] = self._preview_collection
-
         width = height = 64
         img_name = f"grin_preview_{self.as_pointer()}"
-        if img_name in bpy.data.images:
-            img = bpy.data.images[img_name]
-            if img.size[0] != width or img.size[1] != height:
-                img.scale(width, height)
+        if not hasattr(self, "_preview_image") or self._preview_image is None:
+            if img_name in bpy.data.images:
+                img = bpy.data.images[img_name]
+                if img.size[0] != width or img.size[1] != height:
+                    img.scale(width, height)
+            else:
+                img = bpy.data.images.new(img_name, width=width, height=height, alpha=True)
+            self._preview_image = img
+            _preview_images.add(img_name)
         else:
-            img = bpy.data.images.new(img_name, width=width, height=height, alpha=True)
+            img = self._preview_image
 
         pixels = [0.0] * (width * height * 4)
-        gamma_val = self.uniform_gamma if self.use_uniform_gamma else max(self.gamma_x, self.gamma_y, self.gamma_z)
-        ior_min = min(self.n0, self.nr)
-        ior_max = max(self.n0, self.nr)
+        if self.use_advanced_mode:
+            gamma_val = (
+                self.uniform_gamma
+                if self.use_uniform_gamma
+                else max(self.gamma_x, self.gamma_y, self.gamma_z)
+            )
+        else:
+            gamma_val = 1.0
+        ior_min = min(self.ior_center, self.ior_radius)
+        ior_max = max(self.ior_center, self.ior_radius)
         diff = ior_max - ior_min or 1e-6
-        radius = max(self.radius, 1e-6)
+        radius = max(self.radius_max, 1e-6)
         for i in range(width):
             r = (i / (width - 1)) * radius
             t = (r / radius) ** gamma_val
-            ior = self.n0 + (self.nr - self.n0) * t
+            ior = self.ior_center + (self.ior_radius - self.ior_center) * t
             y = int(((ior - ior_min) / diff) * (height - 1))
             idx = (height - 1 - y) * width + i
             pixels[idx * 4 : idx * 4 + 4] = [1.0, 1.0, 1.0, 1.0]
 
         img.pixels[:] = pixels
-        filepath = os.path.join(bpy.app.tempdir, f"{img_name}.png")
-        img.filepath_raw = filepath
-        img.file_format = 'PNG'
-        img.save()
-
-        # refresh the preview thumbnail
-        if "preview" in self._preview_collection:
-            self._preview_collection.clear()
-        self._preview_collection.load("preview", filepath, 'IMAGE')
-        # remove the temporary file once loaded
+        img.update()
         try:
-            os.remove(filepath)
-        except OSError:
+            img.preview_ensure()
+        except AttributeError:
             pass
+        self.preview_image = img
 
     def free(self):
         super().free()
-        ptr = self.as_pointer()
-        collection = _preview_store.pop(ptr, None)
-        if collection is None and hasattr(self, "_preview_collection"):
-            collection = self._preview_collection
-        if collection:
-            try:
-                bpy.utils.previews.remove(collection)
-            except Exception:
-                pass
-        self._preview_collection = None
         img_name = f"grin_preview_{self.as_pointer()}"
-        if img_name in bpy.data.images:
-            bpy.data.images.remove(bpy.data.images[img_name])
-        filepath = os.path.join(bpy.app.tempdir, f"{img_name}.png")
-        if os.path.exists(filepath):
-            try:
-                os.remove(filepath)
-            except OSError:
-                pass
+        if hasattr(self, "_preview_image") and self._preview_image:
+            if img_name in bpy.data.images:
+                bpy.data.images.remove(bpy.data.images[img_name])
+            _preview_images.discard(img_name)
+        self._preview_image = None
+        self.preview_image = None
 
     def draw_buttons(self, context, layout):
         self.draw_common_buttons(context, layout)
-        layout.prop(self, "n0")
-        layout.prop(self, "nr")
-        layout.prop(self, "radius")
-        layout.prop(self, "beta")
-        layout.prop(self, "use_uniform_gamma")
-        if self.use_uniform_gamma:
-            layout.prop(self, "uniform_gamma")
+        layout.prop(self, "use_advanced_mode")
+        if self.use_advanced_mode:
+            layout.prop(self, "beta")
+            layout.prop(self, "use_uniform_gamma")
+            if self.use_uniform_gamma:
+                layout.prop(self, "uniform_gamma")
+            else:
+                layout.prop(self, "gamma_x")
+                layout.prop(self, "gamma_y")
+                layout.prop(self, "gamma_z")
+            layout.prop(self, "stepSize")
+            layout.prop(self, "stepLimit")
         else:
-            layout.prop(self, "gamma_x")
-            layout.prop(self, "gamma_y")
-            layout.prop(self, "gamma_z")
-        if hasattr(self, "_preview_collection") and "preview" in self._preview_collection:
+            layout.prop(self, "ior_center")
+            layout.prop(self, "ior_radius")
+            layout.prop(self, "radius_max")
+        layout.prop(self, "profile_type")
+        if self.preview_image:
             layout.label(text="IOR Profile:")
-            layout.label(text="", icon_value=self._preview_collection["preview"].icon_id)
-        layout.prop(self, "stepSize")
-        layout.prop(self, "stepLimit")
+            layout.template_preview(self.preview_image, show_buttons=False)
 
 
     def sub_export(self, exporter, depsgraph, props, luxcore_name=None, output_socket=None):
-        gamma_vals = ([self.uniform_gamma] * 3 if self.use_uniform_gamma
-                       else [self.gamma_x, self.gamma_y, self.gamma_z])
+        if self.use_advanced_mode:
+            gamma_vals = (
+                [self.uniform_gamma] * 3
+                if self.use_uniform_gamma
+                else [self.gamma_x, self.gamma_y, self.gamma_z]
+            )
+            beta_val = self.beta
+            stepsize = self.stepSize
+            numsteps = self.stepLimit
+        else:
+            gamma_vals = [1.0, 1.0, 1.0]
+            beta_val = 2.0
+            stepsize = None
+            numsteps = None
+
         definitions = {
             "type": "grin",
-            "grin.iormin": [self.n0] * 3,
-            "grin.iormax": [self.nr] * 3,
-            "grin.stretch": [self.radius] * 3,
-            "grin.profile": "radial",
-            "grin.beta": self.beta,
+            "grin.iormin": [self.ior_center] * 3,
+            "grin.iormax": [self.ior_radius] * 3,
+            "grin.stretch": [self.radius_max] * 3,
+            "grin.profile": self.profile_type.lower(),
+            "grin.beta": beta_val,
             "grin.gamma": gamma_vals,
-            "grin.stepsize": self.stepSize,
-            "grin.numsteps": self.stepLimit,
         }
+        if stepsize is not None:
+            definitions["grin.stepsize"] = stepsize
+            definitions["grin.numsteps"] = numsteps
         self.export_common_inputs(exporter, depsgraph, props, definitions)
         return self.create_props(props, definitions, luxcore_name)
 
 
-def unregister_previews():
-    for col in list(_preview_store.values()):
-        try:
-            bpy.utils.previews.remove(col)
-        except Exception:
-            pass
-    _preview_store.clear()
+class NODE_PT_grin_preview(bpy.types.Panel):
+    bl_space_type = "NODE_EDITOR"
+    bl_region_type = "UI"
+    bl_category = "Node"
+    bl_label = "GRIN Preview"
+
+    @classmethod
+    def poll(cls, context):
+        node = getattr(context, "active_node", None)
+        return isinstance(node, LuxCoreNodeVolGRIN) and node.preview_image is not None
+
+    def draw(self, context):
+        node = context.active_node
+        if node.preview_image:
+            self.layout.template_preview(node.preview_image, show_buttons=False)
+
+
+def cleanup_preview_images():
+    for name in list(_preview_images):
+        if name in bpy.data.images:
+            bpy.data.images.remove(bpy.data.images[name])
+    _preview_images.clear()
 
 
 def register():
-    pass
+    bpy.utils.register_class(NODE_PT_grin_preview)
 
 
 def unregister():
-    unregister_previews()
+    bpy.utils.unregister_class(NODE_PT_grin_preview)
+    cleanup_preview_images()
