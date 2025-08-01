@@ -1,6 +1,3 @@
-+248
--45
-
 import bpy
 from bpy.props import (
     IntProperty,
@@ -225,22 +222,20 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
     def draw_buttons(self, context, layout):
         self.draw_common_buttons(context, layout)
         layout.prop(self, "use_advanced_mode")
-        if self.use_advanced_mode:
-            layout.prop(self, "beta")
-            layout.prop(self, "use_uniform_gamma")
-            if self.use_uniform_gamma:
-                layout.prop(self, "uniform_gamma")
-            else:
-                layout.prop(self, "gamma_x")
-                layout.prop(self, "gamma_y")
-                layout.prop(self, "gamma_z")
-            layout.prop(self, "stepSize")
-            layout.prop(self, "stepLimit")
+        layout.prop(self, "ior_inner")
+        layout.prop(self, "ior_outer")
+        layout.prop(self, "r_inner")
+        layout.prop(self, "r_outer")
+        layout.prop(self, "beta")
+        layout.prop(self, "use_uniform_gamma")
+        if self.use_uniform_gamma:
+            layout.prop(self, "uniform_gamma")
         else:
-            layout.prop(self, "ior_inner")
-            layout.prop(self, "ior_outer")
-            layout.prop(self, "r_inner")
-            layout.prop(self, "r_outer")
+            layout.prop(self, "gamma_x")
+            layout.prop(self, "gamma_y")
+            layout.prop(self, "gamma_z")
+        layout.prop(self, "stepSize")
+        layout.prop(self, "stepLimit")
         layout.prop(self, "profile_type")
         if self.preview_image:
             layout.label(text="IOR Profile:")
