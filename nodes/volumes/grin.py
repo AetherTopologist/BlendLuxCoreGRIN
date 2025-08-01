@@ -1,3 +1,6 @@
++248
+-45
+
 import bpy
 from bpy.props import (
     IntProperty,
@@ -27,6 +30,7 @@ VOLUME_PRIORITY_DESC = (
     "In areas where two or more volumes overlap, the volume with the highest "
     "priority number will be chosen and completely replace all other volumes"
 )
+
 
 def update_grin_preview(self, context):
     if self.use_advanced_mode:
@@ -69,28 +73,36 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
         update=update_grin_preview,
     )
 
-    ior_center: FloatProperty(
+    ior_inner: FloatProperty(
         update=update_grin_preview,
-        name="IOR Center",
+        name="IOR Inner",
         default=1.0,
         min=0.1,
-        description="Refractive index at the center",
+        description="Refractive index at r_inner",
     )
 
-    ior_radius: FloatProperty(
+    ior_outer: FloatProperty(
         update=update_grin_preview,
-        name="IOR Edge",
+        name="IOR Outer",
         default=1.0,
         min=0.1,
-        description="Refractive index at the edge",
+        description="Refractive index at r_outer",
     )
 
-    radius_max: FloatProperty(
+    r_inner: FloatProperty(
         update=update_grin_preview,
-        name="Radius",
+        name="r_inner",
+        default=0.0,
+        min=0.0,
+        description="Inner radius where GRIN effect starts",
+    )
+
+    r_outer: FloatProperty(
+        update=update_grin_preview,
+        name="r_outer",
         default=10.0,
         min=0.001,
-        description="Maximum radius for the GRIN field",
+        description="Outer radius where GRIN effect ends",
     )
 
     profile_type: EnumProperty(
@@ -176,14 +188,18 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
             )
         else:
             gamma_val = 1.0
-        ior_min = min(self.ior_center, self.ior_radius)
-        ior_max = max(self.ior_center, self.ior_radius)
+        ior_min = min(self.ior_inner, self.ior_outer)
+        ior_max = max(self.ior_inner, self.ior_outer)
         diff = ior_max - ior_min or 1e-6
-        radius = max(self.radius_max, 1e-6)
+        r0 = max(self.r_inner, 0.0)
+        r1 = max(self.r_outer, r0 + 1e-6)
         for i in range(width):
-            r = (i / (width - 1)) * radius
-            t = (r / radius) ** gamma_val
-            ior = self.ior_center + (self.ior_radius - self.ior_center) * t
+            r = (i / (width - 1)) * r1
+            if r < r0:
+                ior = self.ior_inner
+            else:
+                t = ((r - r0) / (r1 - r0)) ** gamma_val
+                ior = self.ior_inner + (self.ior_outer - self.ior_inner) * t
             y = int(((ior - ior_min) / diff) * (height - 1))
             idx = (height - 1 - y) * width + i
             pixels[idx * 4 : idx * 4 + 4] = [1.0, 1.0, 1.0, 1.0]
@@ -221,9 +237,10 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
             layout.prop(self, "stepSize")
             layout.prop(self, "stepLimit")
         else:
-            layout.prop(self, "ior_center")
-            layout.prop(self, "ior_radius")
-            layout.prop(self, "radius_max")
+            layout.prop(self, "ior_inner")
+            layout.prop(self, "ior_outer")
+            layout.prop(self, "r_inner")
+            layout.prop(self, "r_outer")
         layout.prop(self, "profile_type")
         if self.preview_image:
             layout.label(text="IOR Profile:")
@@ -238,26 +255,25 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
                 else [self.gamma_x, self.gamma_y, self.gamma_z]
             )
             beta_val = self.beta
-            stepsize = self.stepSize
-            numsteps = self.stepLimit
         else:
             gamma_vals = [1.0, 1.0, 1.0]
             beta_val = 2.0
-            stepsize = None
-            numsteps = None
+
+        stepsize = self.stepSize
+        numsteps = self.stepLimit
 
         definitions = {
             "type": "grin",
-            "grin.iormin": [self.ior_center] * 3,
-            "grin.iormax": [self.ior_radius] * 3,
-            "grin.stretch": [self.radius_max] * 3,
+            "grin.iormin": [self.ior_inner] * 3,
+            "grin.iormax": [self.ior_outer] * 3,
+            "grin.rmin": self.r_inner,
+            "grin.rmax": self.r_outer,
             "grin.profile": self.profile_type.lower(),
             "grin.beta": beta_val,
             "grin.gamma": gamma_vals,
+            "grin.stepsize": stepsize,
+            "grin.numsteps": numsteps,
         }
-        if stepsize is not None:
-            definitions["grin.stepsize"] = stepsize
-            definitions["grin.numsteps"] = numsteps
         self.export_common_inputs(exporter, depsgraph, props, definitions)
         return self.create_props(props, definitions, luxcore_name)
 
