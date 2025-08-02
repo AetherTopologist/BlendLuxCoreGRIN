@@ -74,23 +74,24 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
         update=update_grin_preview,
         name="IOR Inner",
         default=1.0,
-        min=0.1,
+        min=-17.0,
+        max=17.0,
         description="Refractive index at r_inner",
     )
 
     ior_outer: FloatProperty(
         update=update_grin_preview,
         name="IOR Outer",
-        default=1.0,
-        min=0.1,
+        default=2.0,
+        min=-17.0,
+        max=17.0,
         description="Refractive index at r_outer",
     )
 
     r_inner: FloatProperty(
         update=update_grin_preview,
         name="r_inner",
-        default=0.0,
-        min=0.0,
+        default=0.00001,
         description="Inner radius where GRIN effect starts",
     )
 
@@ -98,7 +99,6 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
         update=update_grin_preview,
         name="r_outer",
         default=10.0,
-        min=0.001,
         description="Outer radius where GRIN effect ends",
     )
 
@@ -113,7 +113,7 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
     #xPRIMEray Properties
     beta: FloatProperty(update=update_grin_preview,
                         name="Beta (β) – Curve Strength",
-                        default=2.0, min=0.0,
+                        default=2.0, min=-100.0, max=100.0,
                         description="Controls strength of curvature along ray")
 
     use_uniform_gamma: BoolProperty(update=update_grin_preview,
@@ -123,22 +123,22 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
 
     uniform_gamma: FloatProperty(update=update_grin_preview,
                                  name="Gamma",
-                                 default=1.0, min=0.1,
+                                 default=1.0, min=-100.0, max=100.0,
                                  description="Exponent curvature for all directions")
 
     gamma_x: FloatProperty(update=update_grin_preview,
                           name="Gamma X (γx)",
-                          default=1.0, min=0.1,
+                          default=1.0, min=-100.0, max=100.0,
                           description="Exponent curvature in X direction")
 
     gamma_y: FloatProperty(update=update_grin_preview,
                           name="Gamma Y (γy)",
-                          default=1.0, min=0.1,
+                          default=1.0, min=-100.0, max=100.0,
                           description="Exponent curvature in Y direction")
 
     gamma_z: FloatProperty(update=update_grin_preview,
                           name="Gamma Z (γz)",
-                          default=1.0, min=0.1,
+                          default=1.0, min=-100.0, max=100.0,
                           description="Exponent curvature in Z direction")
 
     preview_image: PointerProperty(type=bpy.types.Image)
@@ -150,7 +150,7 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
 
     stepLimit: FloatProperty(update=utils_node.force_viewport_update,
                         name='RK4 Curve Step Limit',
-                        default=100, min=3,
+                        default=1000, min=3,
                         description="Stepper Limit for Curved Path Integrator. Max Distance Limit RK4 Path Detector will halt to cap processing time per ray.")
 
 
