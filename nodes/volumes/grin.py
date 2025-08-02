@@ -2,6 +2,7 @@ import bpy
 from bpy.props import (
     IntProperty,
     FloatProperty,
+    FloatVectorProperty,
     StringProperty,
     BoolProperty,
     PointerProperty,
@@ -100,6 +101,14 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
         name="r_outer",
         default=10.0,
         description="Outer radius where GRIN effect ends",
+    )
+
+    center: FloatVectorProperty(
+        update=utils_node.force_viewport_update,
+        name="Center",
+        default=(0.0, 0.0, 0.0),
+        subtype="XYZ",
+        description="Center of the GRIN volume",
     )
 
     profile_type: EnumProperty(
@@ -225,36 +234,48 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
         self._preview_image = None
         self.preview_image = None
 
+
     def draw_buttons(self, context, layout):
         self.draw_common_buttons(context, layout)
         layout.prop(self, "use_advanced_mode")
-        layout.prop(self, "ior_inner")
-        layout.prop(self, "ior_outer")
-        layout.prop(self, "r_inner")
-        layout.prop(self, "r_outer")
-        layout.prop(self, "beta")
-        layout.prop(self, "use_uniform_gamma")
+        layout.prop(self, "center")
+
+        box_inner = layout.box()
+        box_inner.label(text="Inner")
+        box_inner.prop(self, "ior_inner")
+        box_inner.prop(self, "r_inner")
+
+        box_outer = layout.box()
+        box_outer.label(text="Outer")
+        box_outer.prop(self, "ior_outer")
+        box_outer.prop(self, "r_outer")
+
+        box_beta = layout.box()
+        box_beta.label(text="Beta / Gamma")
+        box_beta.prop(self, "beta")
+        box_beta.prop(self, "use_uniform_gamma")
         if self.use_uniform_gamma:
-            layout.prop(self, "uniform_gamma")
+            box_beta.prop(self, "uniform_gamma")
         else:
-            layout.prop(self, "gamma_x")
-            layout.prop(self, "gamma_y")
-            layout.prop(self, "gamma_z")
-        layout.prop(self, "stepSize")
-        layout.prop(self, "stepLimit")
+            box_beta.prop(self, "gamma_x")
+            box_beta.prop(self, "gamma_y")
+            box_beta.prop(self, "gamma_z")
+
+        box_rk4 = layout.box()
+        box_rk4.label(text="RK4")
+        box_rk4.prop(self, "stepSize")
+        box_rk4.prop(self, "stepLimit")
+
         layout.prop(self, "profile_type")
         layout.prop(self, "invert_polarity")
         # Symbolic flair: red = inverted, blue = default
         if self.invert_polarity:
-            self.color = (1.0, 0.2, 0.2)  # Red
             layout.label(text="Inversion: ON", icon='MOD_MIRROR')
         else:
-            self.color = (0.2, 0.4, 1.0)  # Blue
             layout.label(text="Inversion: OFF", icon='MOD_SMOOTH')
         if self.preview_image:
             layout.label(text="IOR Profile:")
             layout.template_preview(self.preview_image, show_buttons=False)
-
 
     def sub_export(self, exporter, depsgraph, props, luxcore_name=None, output_socket=None):
         if self.use_advanced_mode:
@@ -277,6 +298,7 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
             "grin.iormax": [self.ior_outer] * 3,
             "grin.rmin": self.r_inner,
             "grin.rmax": self.r_outer,
+            "grin.center": list(self.center),
             "grin.profile": self.profile_type.lower(),
             "grin.beta": beta_val,
             "grin.gamma": gamma_vals,
