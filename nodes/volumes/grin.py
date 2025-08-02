@@ -153,6 +153,12 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
                         default=1000, min=3,
                         description="Stepper Limit for Curved Path Integrator. Max Distance Limit RK4 Path Detector will halt to cap processing time per ray.")
 
+    invert_polarity: BoolProperty(
+        name="Invert GRIN Polarity",
+        default=False,
+        description="Flip GRIN field direction (symbolic inward/outward curvature)"
+    )
+
 
     def init(self, context):
         self.add_common_inputs()
@@ -237,6 +243,14 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
         layout.prop(self, "stepSize")
         layout.prop(self, "stepLimit")
         layout.prop(self, "profile_type")
+        layout.prop(self, "invert_polarity")
+        # Symbolic flair: red = inverted, blue = default
+        if self.invert_polarity:
+            self.color = (1.0, 0.2, 0.2)  # Red
+            layout.label(text="Inversion: ON", icon='MOD_MIRROR')
+        else:
+            self.color = (0.2, 0.4, 1.0)  # Blue
+            layout.label(text="Inversion: OFF", icon='MOD_SMOOTH')
         if self.preview_image:
             layout.label(text="IOR Profile:")
             layout.template_preview(self.preview_image, show_buttons=False)
@@ -268,6 +282,7 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
             "grin.gamma": gamma_vals,
             "grin.stepsize": stepsize,
             "grin.numsteps": numsteps,
+            "grin.invert": 1 if self.invert_polarity else 0,
         }
         self.export_common_inputs(exporter, depsgraph, props, definitions)
         return self.create_props(props, definitions, luxcore_name)
