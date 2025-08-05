@@ -14,8 +14,18 @@ from ..base import LuxCoreNodeVolume
 from ...utils import node as utils_node
 from ...utils.light_descriptions import LIGHTGROUP_DESC
 
-# keep track of preview image datablocks for cleanup
+# keep track of preview image/texture datablocks for cleanup
 _preview_images = set()
+_preview_textures = set()
+
+
+def update_node_color(self, context):
+    self.use_custom_color = True
+    if self.invert_polarity:
+        self.color = (1.0, 0.3, 0.3)  # red tint when inverted
+    else:
+        self.color = (0.3, 0.5, 1.0)  # blue tint by default
+    utils_node.force_viewport_update(self, context)
 
 PROFILE_ITEMS = [
     ("POWER", "Power", "Power profile"),
@@ -165,15 +175,17 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
     invert_polarity: BoolProperty(
         name="Invert GRIN Polarity",
         default=False,
-        description="Flip GRIN field direction (symbolic inward/outward curvature)"
+        description="Flip GRIN field direction (symbolic inward/outward curvature)",
+        update=update_node_color,
     )
 
 
     def init(self, context):
         self.add_common_inputs()
         self._preview_image = None
+        self._preview_texture = None
         self.generate_preview()
-
+        update_node_color(self, context)
         self.outputs.new("LuxCoreSocketVolume", "Volume")
 
     def generate_preview(self):
@@ -190,6 +202,17 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
             _preview_images.add(img_name)
         else:
             img = self._preview_image
+        tex_name = f"grin_preview_tex_{self.as_pointer()}"
+        if not hasattr(self, "_preview_texture") or self._preview_texture is None:
+            if tex_name in bpy.data.textures:
+                tex = bpy.data.textures[tex_name]
+            else:
+                tex = bpy.data.textures.new(tex_name, type='IMAGE')
+            self._preview_texture = tex
+            _preview_textures.add(tex_name)
+        else:
+            tex = self._preview_texture
+        tex.image = img
 
         pixels = [0.0] * (width * height * 4)
         if self.use_advanced_mode:
@@ -232,6 +255,12 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
                 bpy.data.images.remove(bpy.data.images[img_name])
             _preview_images.discard(img_name)
         self._preview_image = None
+        tex_name = f"grin_preview_tex_{self.as_pointer()}"
+        if hasattr(self, "_preview_texture") and self._preview_texture:
+            if tex_name in bpy.data.textures:
+                bpy.data.textures.remove(bpy.data.textures[tex_name])
+            _preview_textures.discard(tex_name)
+        self._preview_texture = None
         self.preview_image = None
 
 
@@ -273,9 +302,9 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
             layout.label(text="Inversion: ON", icon='MOD_MIRROR')
         else:
             layout.label(text="Inversion: OFF", icon='MOD_SMOOTH')
-        if self.preview_image:
+        if self.preview_image and getattr(self, "_preview_texture", None):
             layout.label(text="IOR Profile:")
-            layout.template_preview(self.preview_image, show_buttons=False)
+            layout.template_preview(self._preview_texture, show_buttons=False)
 
     def sub_export(self, exporter, depsgraph, props, luxcore_name=None, output_socket=None):
         if self.use_advanced_mode:
@@ -323,8 +352,8 @@ class NODE_PT_grin_preview(bpy.types.Panel):
 
     def draw(self, context):
         node = context.active_node
-        if node.preview_image:
-            self.layout.template_preview(node.preview_image, show_buttons=False)
+        if node.preview_image and getattr(node, "_preview_texture", None):
+            self.layout.template_preview(node._preview_texture, show_buttons=False)
 
 
 def cleanup_preview_images():
@@ -332,6 +361,10 @@ def cleanup_preview_images():
         if name in bpy.data.images:
             bpy.data.images.remove(bpy.data.images[name])
     _preview_images.clear()
+    for name in list(_preview_textures):
+        if name in bpy.data.textures:
+            bpy.data.textures.remove(bpy.data.textures[name])
+    _preview_textures.clear()
 
 
 def register():
