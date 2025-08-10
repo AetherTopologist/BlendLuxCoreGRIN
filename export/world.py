@@ -13,20 +13,20 @@ def export_grin_stitch(scene, props: Properties):
     if g is None:
         return
 
-    props.Set(Property("grin.stitch_plane_factor")(g.stitch_plane_factor))
-    props.Set(Property("grin.stitch_bary_margin")(g.stitch_bary_margin))
-    props.Set(Property("grin.stitch_max_probes")(g.stitch_max_probes))
-    props.Set(Property("grin.stitch_edge_jitter_count")(g.stitch_edge_jitter_count))
-    props.Set(Property("grin.stitch_edge_jitter_scale")(g.stitch_edge_jitter_scale))
-    props.Set(Property("grin.stitch_use_vertex_neighbors")(bool(g.stitch_use_vertex_neighbors)))
-    props.Set(Property("grin.stitch_debug")(bool(g.stitch_debug)))
+    props.Set(Property("grin.stitch_plane_factor", g.stitch_plane_factor))
+    props.Set(Property("grin.stitch_bary_margin", g.stitch_bary_margin))
+    props.Set(Property("grin.stitch_max_probes", g.stitch_max_probes))
+    props.Set(Property("grin.stitch_edge_jitter_count", g.stitch_edge_jitter_count))
+    props.Set(Property("grin.stitch_edge_jitter_scale", g.stitch_edge_jitter_scale))
+    props.Set(Property("grin.stitch_use_vertex_neighbors", bool(g.stitch_use_vertex_neighbors)))
+    props.Set(Property("grin.stitch_debug", bool(g.stitch_debug)))
 
-    props.Set(Property("grin.uv_seam_tolerance")(g.uv_seam_tolerance))
-    props.Set(Property("grin.uv_cross_island_policy")(g.uv_cross_island_policy))
+    props.Set(Property("grin.uv_seam_tolerance", g.uv_seam_tolerance))
+    props.Set(Property("grin.uv_cross_island_policy", g.uv_cross_island_policy))
 
-    props.Set(Property("grin.insight_curvature_threshold")(g.insight_curvature_threshold))
-    props.Set(Property("grin.barycentric_epsilon")(g.barycentric_epsilon))
-    props.Set(Property("grin.rk4_plane_threshold")(g.rk4_plane_threshold))
+    props.Set(Property("grin.insight_curvature_threshold", g.insight_curvature_threshold))
+    props.Set(Property("grin.barycentric_epsilon", g.barycentric_epsilon))
+    props.Set(Property("grin.rk4_plane_threshold", g.rk4_plane_threshold))
 
 
 def convert(exporter, depsgraph, scene, is_viewport_render):
