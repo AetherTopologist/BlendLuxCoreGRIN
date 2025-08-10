@@ -4,91 +4,105 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
     stitch_plane_factor: bpy.props.FloatProperty(
         name="Plane Factor",
         default=2.0,
-        min=0.25,
-        max=6.0,
-        step=5,
+        min=0.5,          # safe floor
+        max=5.0,          # safe ceiling
+        step=3,
         precision=3,
-        description="Multiplier on plane-threshold for near-plane neighbor adoption",
+        description="Multiplier for the near-plane test used by stitching"
     )
+
     stitch_bary_margin: bpy.props.FloatProperty(
         name="Bary Margin",
         default=0.02,
         min=0.0,
-        max=0.1,
+        max=0.05,         # tighter to avoid big UV pulls
         step=1,
-        precision=3,
-        description="Extra barycentric margin for near-bary neighbors",
+        precision=4,
+        description="Extra barycentric tolerance for near-edge acceptance"
     )
+
     stitch_max_probes: bpy.props.IntProperty(
         name="Max Probes",
-        default=6,
+        default=3,        # conservative default
         min=0,
-        max=24,
-        description="How many neighbors to try",
+        max=8,            # beyond this tends to be diminishing returns
+        description="How many neighbor triangles to try when stitching"
     )
+
     stitch_edge_jitter_count: bpy.props.IntProperty(
         name="Edge Jitter Count",
         default=2,
         min=0,
-        max=16,
-        description="Extra nudged rays per neighbor",
+        max=4,            # keep small; higher can scatter UVs and cost perf
+        description="Extra nudged rays per neighbor along the shared edge"
     )
+
     stitch_edge_jitter_scale: bpy.props.FloatProperty(
         name="Edge Jitter Scale",
-        default=0.0001,
-        min=0.000001,
-        max=0.01,
+        default=0.0001,     # 1e-4
+        min=0.000001,       # 1e-6
+        max=0.0002,         # 2e-4 (don’t go larger; starts to smear)
         step=1,
         precision=6,
-        description="Fraction of edge length for origin nudge",
+        description="Fraction of edge length to offset the ray origin for jitter"
     )
+
     stitch_use_vertex_neighbors: bpy.props.BoolProperty(
         name="Use Vertex Neighbors",
         default=False,
+        description="Also probe vertex-adjacent triangles (slower; rarely needed)"
     )
+
     stitch_debug: bpy.props.BoolProperty(
         name="Debug",
         default=False,
+        description="Verbose logging for stitch decisions"
     )
 
     uv_seam_tolerance: bpy.props.FloatProperty(
         name="UV Seam Tolerance",
-        default=0.0001,
-        min=0.0,
-        max=0.01,
+        default=0.000001,   # 1e-6 (good minimal start)
+        min=0.00000001,     # 1e-8
+        max=0.001,          # 1e-3 (anything bigger risks visible stretching)
         step=1,
-        precision=6,
-        description="How far outside (in bary) we still clamp back",
+        precision=8,
+        description="Distance to triangle edges (in world/plane space) considered a seam proximity"
     )
+
     uv_cross_island_policy: bpy.props.EnumProperty(
         name="UV Cross-Island",
         items=[
-            ("reject", "Reject", "Ignore neighbor if outside tri"),
-            ("edge_project", "Edge Project", "Project hit to nearest edge"),
+            ("reject", "Reject", "Reject hits near an edge if they would cross UV islands"),
+            ("edge_project", "Edge Project", "Project near-edge hits onto the closest edge before sampling UVs"),
         ],
         default="reject",
     )
 
     insight_curvature_threshold: bpy.props.FloatProperty(
         name="INSIGHT Curvature",
-        default=1e-6,
-        min=1e-8,
-        max=1e-3,
+        default=0.000001,   # 1e-6
+        min=0.00000001,     # 1e-8
+        max=0.001,          # 1e-3
         precision=8,
+        description="Guard against division-by-near-zero in symbolic plane solve"
     )
+
     barycentric_epsilon: bpy.props.FloatProperty(
         name="Barycentric Epsilon",
         default=0.03,
         min=0.0001,
         max=0.10,
         precision=5,
+        description="Robustness tolerance for barycentric inside-triangle checks"
     )
+
     rk4_plane_threshold: bpy.props.FloatProperty(
         name="RK4 Plane Threshold",
-        default=1e-4,
-        min=1e-6,
-        max=1e-2,
+        default=0.0001,     # 1e-4
+        min=0.000001,       # 1e-6
+        max=0.01,           # 1e-2
         precision=8,
+        description="Near-plane threshold used during RK4 marching to trigger a bary test"
     )
 
     @classmethod
