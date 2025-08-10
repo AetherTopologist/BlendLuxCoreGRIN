@@ -280,6 +280,45 @@ class LUXCORE_WORLD_PT_visibility(WorldButtonsPanel, Panel):
         if not enabled:
             layout.label(text="Only supported by Path engines (not by Bidir)", icon=icons.INFO)
 
+
+class LUXCORE_WORLD_PT_grin_stitch(WorldButtonsPanel, Panel):
+    COMPAT_ENGINES = {"LUXCORE"}
+    bl_label = "GRIN Stitching"
+    bl_options = {"DEFAULT_CLOSED"}
+    bl_order = 6
+
+    @classmethod
+    def poll(cls, context):
+        engine = context.scene.render.engine
+        return context.world and engine == "LUXCORE"
+
+    def draw(self, context):
+        layout = self.layout
+        g = context.scene.luxcore_grin
+
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+
+        box = layout.box()
+        box.label(text="Stitching")
+        col = box.column(align=True)
+        col.prop(g, "stitch_plane_factor")
+        col.prop(g, "stitch_bary_margin")
+        col.prop(g, "stitch_max_probes")
+        col.prop(g, "stitch_edge_jitter_count")
+        col.prop(g, "stitch_edge_jitter_scale")
+        col.prop(g, "stitch_use_vertex_neighbors")
+        col.prop(g, "stitch_debug")
+
+        box = layout.box()
+        box.label(text="UV/Robustness")
+        col = box.column(align=True)
+        col.prop(g, "uv_seam_tolerance")
+        col.prop(g, "uv_cross_island_policy")
+        col.prop(g, "insight_curvature_threshold")
+        col.prop(g, "barycentric_epsilon")
+        col.prop(g, "rk4_plane_threshold")
+
 def compatible_panels():
     panels = [
         "WORLD_PT_context_world",

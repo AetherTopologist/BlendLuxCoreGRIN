@@ -266,6 +266,24 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
 
     def draw_buttons(self, context, layout):
         self.draw_common_buttons(context, layout)
+        col = layout.column(align=True)
+        if any(k in self.keys() for k in (
+            "stitch_plane_factor",
+            "stitch_bary_margin",
+            "stitch_max_probes",
+            "stitch_edge_jitter_count",
+            "stitch_edge_jitter_scale",
+            "stitch_use_vertex_neighbors",
+            "stitch_debug",
+            "uv_seam_tolerance",
+            "uv_cross_island_policy",
+            "insight_curvature_threshold",
+            "barycentric_epsilon",
+            "rk4_plane_threshold",
+        )):
+            col.label(text="Deprecated node stitching props", icon='ERROR')
+        col.label(text="Stitching controlled in World properties", icon='WORLD')
+
         layout.prop(self, "use_advanced_mode")
         layout.prop(self, "center")
 

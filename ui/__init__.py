@@ -62,6 +62,7 @@ classes = (
     world.LUXCORE_WORLD_PT_volume,
     world.LUXCORE_WORLD_PT_performance,
     world.LUXCORE_WORLD_PT_visibility,
+    world.LUXCORE_WORLD_PT_grin_stitch,
 )
 
 def register():
