@@ -50,7 +50,8 @@ classes = (
     statistics.LuxCoreRenderStatsCollection,
     scene.LuxCoreScene,
     view_layer.LuxCoreViewLayer,
-    world.LuxCoreWorldProps
+    world.LuxCoreWorldProps,
+    grin.LuxCoreGRINProps,
 )
 
 def register():

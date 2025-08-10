@@ -294,7 +294,10 @@ class LUXCORE_WORLD_PT_grin_stitch(WorldButtonsPanel, Panel):
 
     def draw(self, context):
         layout = self.layout
-        g = context.scene.luxcore_grin
+        g = getattr(context.scene, "luxcore_grin", None)
+        if g is None:
+            layout.label(text="GRIN properties unavailable", icon='ERROR')
+            return
 
         layout.use_property_split = True
         layout.use_property_decorate = False

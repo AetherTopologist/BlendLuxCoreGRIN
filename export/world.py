@@ -9,7 +9,10 @@ from ..utils.errorlog import LuxCoreErrorLog
 
 
 def export_grin_stitch(scene, props: Properties):
-    g = scene.luxcore_grin
+    g = getattr(scene, "luxcore_grin", None)
+    if g is None:
+        return
+
     props.Set(Property("grin.stitch_plane_factor")(g.stitch_plane_factor))
     props.Set(Property("grin.stitch_bary_margin")(g.stitch_bary_margin))
     props.Set(Property("grin.stitch_max_probes")(g.stitch_max_probes))
