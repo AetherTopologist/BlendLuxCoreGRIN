@@ -77,20 +77,6 @@ def export_grin_props(scene, props: Properties):
         print("[BLC] GRIN props:", export_dict)
 
 
-def export_grin_adaptive(scene, props: Properties):
-    g = getattr(scene, "luxcore_grin", None)
-    if g is None:
-        return
-
-    props.Set(Property("grin.adaptive.enable", int(g.adaptive_enable)))
-    props.Set(Property("grin.adaptive.plane_trigger_factor", g.adaptive_plane_trigger_factor))
-    props.Set(Property("grin.adaptive.curvature_trigger", g.adaptive_curvature_trigger))
-    props.Set(Property("grin.adaptive.max_subdiv", g.adaptive_max_subdiv))
-    props.Set(Property("grin.adaptive.bisect_iters", g.adaptive_bisect_iters))
-    props.Set(Property("grin.adaptive.min_step", g.adaptive_min_step))
-    props.Set(Property("grin.adaptive.insight_accept_margin", g.adaptive_insight_accept_margin))
-
-
 def convert(exporter, depsgraph, scene, is_viewport_render):
     props = pyluxcore.Properties()
     world = scene.world
@@ -103,8 +89,6 @@ def convert(exporter, depsgraph, scene, is_viewport_render):
     if world_light_props:
         props.Set(world_light_props)
 
-    export_grin_stitch(scene, props)
-    export_grin_adaptive(scene, props)
     export_grin_props(scene, props)
   
     # World volume
