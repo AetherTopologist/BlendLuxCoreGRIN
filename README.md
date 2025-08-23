@@ -68,6 +68,21 @@ Open Blender and follow "Install from disk" procedure (https://docs.blender.org/
 
 Beforehand, you may want to uninstall previous version of BlendLuxCore: look in the "Get Extensions" panel.
 
+### GRIN Performance Controls
+
+- **RK4 Step Init** – Initial RK4 step size for curved rays.
+- **RK4 Step Min** – Smallest allowed RK4 step after adaptation.
+- **RK4 Step Max** – Largest allowed RK4 step after adaptation.
+- **RK4 Curvature K** – How strongly local curvature reduces step size.
+- **RK4 Max Steps** – Hard cap on RK4 steps per segment.
+- **RK4 Max Arc Len** – Abort curved integration after this path length.
+- **Deflect Eps** – Treat segment as linear if accumulated bend stays below this.
+- **Linearize Threshold** – Skip RK4 when INSIGHT plane distance is larger than this.
+- **Max Linearize Depth** – Maximum recursion depth for linear fallback.
+- **UV Seam Tolerance** – Tolerance for accepting barycentrics outside triangle at seams.
+- **UV Cross-Island Policy** – Strategy for cross-island UV hits.
+- **Fast Math** – Use fast exponent approximations (minor precision loss, faster).
+
 ## Important Links
 
 **Homepage:**        **https://luxcorerender.org/**  

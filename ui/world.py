@@ -1,6 +1,6 @@
 import bpy
 from bl_ui.properties_world import WorldButtonsPanel
-from bpy.types import Panel
+from bpy.types import Panel, Operator, Menu
 from cycles.ui import panel_node_draw
 
 from . import icons
@@ -281,6 +281,31 @@ class LUXCORE_WORLD_PT_visibility(WorldButtonsPanel, Panel):
             layout.label(text="Only supported by Path engines (not by Bidir)", icon=icons.INFO)
 
 
+def draw_grin_adaptive(layout, g):
+    box = layout.box()
+    col = box.column(align=True)
+    col.label(text="Adaptive Stepping")
+    col.prop(g, "adaptive_enable", toggle=True)
+
+    row = col.row(align=True)
+    row.enabled = g.adaptive_enable
+    row.prop(g, "adaptive_plane_trigger_factor")
+
+    row = col.row(align=True)
+    row.enabled = g.adaptive_enable
+    row.prop(g, "adaptive_curvature_trigger")
+
+    row = col.row(align=True)
+    row.enabled = g.adaptive_enable
+    row.prop(g, "adaptive_max_subdiv")
+    row.prop(g, "adaptive_bisect_iters")
+
+    row = col.row(align=True)
+    row.enabled = g.adaptive_enable
+    row.prop(g, "adaptive_min_step")
+    row.prop(g, "adaptive_insight_accept_margin")
+
+
 class LUXCORE_WORLD_PT_grin_stitch(WorldButtonsPanel, Panel):
     COMPAT_ENGINES = {"LUXCORE"}
     bl_label = "GRIN Stitching"
@@ -311,16 +336,184 @@ class LUXCORE_WORLD_PT_grin_stitch(WorldButtonsPanel, Panel):
         col.prop(g, "stitch_edge_jitter_count")
         col.prop(g, "stitch_edge_jitter_scale")
         col.prop(g, "stitch_use_vertex_neighbors")
-        col.prop(g, "stitch_debug")
 
         box = layout.box()
         box.label(text="UV/Robustness")
         col = box.column(align=True)
-        col.prop(g, "uv_seam_tolerance")
-        col.prop(g, "uv_cross_island_policy")
         col.prop(g, "insight_curvature_threshold")
         col.prop(g, "barycentric_epsilon")
         col.prop(g, "rk4_plane_threshold")
+
+        draw_grin_adaptive(layout, g)
+
+
+class LUXCORE_OT_grin_preset_interactive(Operator):
+    bl_idname = "luxcore.grin_preset_interactive"
+    bl_label = "Interactive"
+
+    def execute(self, context):
+        g = context.scene.luxcore_grin
+        g.rk4_step_init = 0.02
+        g.rk4_step_min = 0.002
+        g.rk4_step_max = 0.06
+        g.rk4_step_curv_k = 0.15
+        g.rk4_max_steps = 24
+        g.rk4_max_arc_len = 0.3
+        g.deflect_eps = 0.0006
+        g.linearize_threshold = 0.002
+        g.fast_math = True
+        return {'FINISHED'}
+
+
+class LUXCORE_OT_grin_preset_preview(Operator):
+    bl_idname = "luxcore.grin_preset_preview"
+    bl_label = "Preview"
+
+    def execute(self, context):
+        g = context.scene.luxcore_grin
+        g.rk4_step_init = 0.015
+        g.rk4_step_min = 0.0015
+        g.rk4_step_max = 0.05
+        g.rk4_step_curv_k = 0.22
+        g.rk4_max_steps = 40
+        g.rk4_max_arc_len = 0.4
+        g.deflect_eps = 0.0003
+        g.linearize_threshold = 0.0015
+        g.fast_math = True
+        return {'FINISHED'}
+
+
+class LUXCORE_OT_grin_preset_balanced(Operator):
+    bl_idname = "luxcore.grin_preset_balanced"
+    bl_label = "Balanced"
+
+    def execute(self, context):
+        g = context.scene.luxcore_grin
+        g.rk4_step_init = 0.01
+        g.rk4_step_min = 0.00001
+        g.rk4_step_max = 0.05
+        g.rk4_step_curv_k = 0.25
+        g.rk4_max_steps = 64
+        g.rk4_max_arc_len = 0.5
+        g.deflect_eps = 0.0001
+        g.linearize_threshold = 0.001
+        g.fast_math = False
+        return {'FINISHED'}
+
+
+class LUXCORE_OT_grin_preset_quality(Operator):
+    bl_idname = "luxcore.grin_preset_quality"
+    bl_label = "Quality"
+
+    def execute(self, context):
+        g = context.scene.luxcore_grin
+        g.rk4_step_init = 0.005
+        g.rk4_step_min = 0.000005
+        g.rk4_step_max = 0.025
+        g.rk4_step_curv_k = 0.25
+        g.rk4_max_steps = 128
+        g.rk4_max_arc_len = 0.5
+        g.deflect_eps = 0.00005
+        g.linearize_threshold = 0.0005
+        g.fast_math = False
+        return {'FINISHED'}
+
+
+class LUXCORE_OT_grin_preset_max(Operator):
+    bl_idname = "luxcore.grin_preset_max"
+    bl_label = "Max"
+
+    def execute(self, context):
+        g = context.scene.luxcore_grin
+        g.rk4_step_init = 0.005
+        g.rk4_step_min = 0.000005
+        g.rk4_step_max = 0.02
+        g.rk4_step_curv_k = 0.35
+        g.rk4_max_steps = 256
+        g.rk4_max_arc_len = 1.0
+        g.deflect_eps = 0.00001
+        g.linearize_threshold = 0.0001
+        g.fast_math = False
+        return {'FINISHED'}
+
+
+class LUXCORE_MT_grin_perf_presets(Menu):
+    bl_idname = "LUXCORE_MT_grin_perf_presets"
+    bl_label = "GRIN Performance Presets"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator("luxcore.grin_preset_interactive", text="Interactive")
+        layout.operator("luxcore.grin_preset_preview", text="Preview")
+        layout.operator("luxcore.grin_preset_balanced", text="Balanced")
+        layout.operator("luxcore.grin_preset_quality", text="Quality")
+        layout.operator("luxcore.grin_preset_max", text="Max")
+
+class LUXCORE_WORLD_PT_grin_performance(WorldButtonsPanel, Panel):
+    COMPAT_ENGINES = {"LUXCORE"}
+    bl_label = "GRIN Performance"
+    bl_options = {"DEFAULT_CLOSED"}
+    bl_order = 7
+
+    @classmethod
+    def poll(cls, context):
+        engine = context.scene.render.engine
+        return context.world and engine == "LUXCORE"
+
+    def draw_header(self, context):
+        layout = self.layout
+        layout.menu("LUXCORE_MT_grin_perf_presets", text="", icon='PRESET')
+
+    def draw(self, context):
+        layout = self.layout
+        g = getattr(context.scene, "luxcore_grin", None)
+        if g is None:
+            layout.label(text="GRIN properties unavailable", icon='ERROR')
+            return
+
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+
+        box = layout.box()
+        box.label(text="Curvature-aware stepping & caps")
+        col = box.column(align=True)
+        col.prop(g, "rk4_step_init")
+        col.prop(g, "rk4_step_min")
+        col.prop(g, "rk4_step_max")
+        col.prop(g, "rk4_step_curv_k")
+        col.prop(g, "rk4_max_steps")
+        col.prop(g, "rk4_max_arc_len")
+
+        box = layout.box()
+        box.label(text="Linearization")
+        col = box.column(align=True)
+        col.prop(g, "deflect_eps")
+        col.prop(g, "linearize_threshold")
+        col.prop(g, "max_linearize_depth")
+
+        box = layout.box()
+        box.label(text="Adaptive")
+        col = box.column(align=True)
+        col.prop(g, "adaptive_enable")
+        col.prop(g, "adaptive_plane_trigger_factor")
+        col.prop(g, "adaptive_curvature_trigger")
+        col.prop(g, "adaptive_max_subdiv")
+        col.prop(g, "adaptive_bisect_iters")
+        col.prop(g, "adaptive_min_step")
+        col.prop(g, "adaptive_insight_accept_margin")
+
+        box = layout.box()
+        box.label(text="Edges & seams")
+        col = box.column(align=True)
+        col.prop(g, "uv_seam_tolerance")
+        col.prop(g, "uv_cross_island_policy")
+
+        box = layout.box()
+        box.label(text="Expert")
+        col = box.column(align=True)
+        col.prop(g, "fast_math")
+        col.prop(g, "stitch_debug")
+        col.prop(g, "uv_bary_debug")
 
 def compatible_panels():
     panels = [

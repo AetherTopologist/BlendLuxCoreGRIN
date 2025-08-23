@@ -63,6 +63,13 @@ classes = (
     world.LUXCORE_WORLD_PT_performance,
     world.LUXCORE_WORLD_PT_visibility,
     world.LUXCORE_WORLD_PT_grin_stitch,
+    world.LUXCORE_WORLD_PT_grin_performance,
+    world.LUXCORE_MT_grin_perf_presets,
+    world.LUXCORE_OT_grin_preset_interactive,
+    world.LUXCORE_OT_grin_preset_preview,
+    world.LUXCORE_OT_grin_preset_balanced,
+    world.LUXCORE_OT_grin_preset_quality,
+    world.LUXCORE_OT_grin_preset_max,
 )
 
 def register():
