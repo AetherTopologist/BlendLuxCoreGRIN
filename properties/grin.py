@@ -6,6 +6,7 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
         name="RK4 Step Init",
         default=0.01,
         min=1e-06, max=0.1,
+        step=0.001, precision=6,
         description="Initial RK4 step size for curved rays.",
     )
 
@@ -13,6 +14,7 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
         name="RK4 Step Min",
         default=0.00001,
         min=1e-07, max=0.01,
+        step=0.00001, precision=7,
         description="Smallest allowed RK4 step after adaptation.",
     )
 
@@ -20,6 +22,7 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
         name="RK4 Step Max",
         default=0.05,
         min=0.0001, max=1.0,
+        step=0.01, precision=4,
         description="Largest allowed RK4 step after adaptation.",
     )
 
@@ -27,6 +30,7 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
         name="RK4 Curvature K",
         default=0.25,
         min=0.0, max=1.0,
+        step=0.1, precision=3,
         description="How strongly local curvature reduces step size.",
     )
 
@@ -34,6 +38,7 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
         name="RK4 Max Steps",
         default=64,
         min=1, max=1024,
+        step=1, precision=1,
         description="Hard cap on RK4 steps per segment.",
     )
 
@@ -41,6 +46,7 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
         name="RK4 Max Arc Len",
         default=0.5,
         min=0.01, max=10.0,
+        step=0.01, precision=2,
         description="Abort curved integration after this path length.",
     )
 
@@ -48,6 +54,7 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
         name="Deflect Eps",
         default=0.0001,
         min=1e-06, max=0.01,
+        step=0.0001, precision=6,
         description="Treat segment as linear if accumulated bend stays below this.",
     )
 
@@ -55,6 +62,7 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
         name="Linearize Threshold",
         default=0.001,
         min=1e-06, max=0.1,
+        step=0.0001, precision=6,
         description="Skip RK4 when INSIGHT plane distance is larger than this.",
     )
 
@@ -62,6 +70,7 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
         name="Max Linearize Depth",
         default=3,
         min=0, max=10,
+        step=1.0, precision=1,
         description="Maximum recursion depth for linear fallback.",
     )
 
@@ -82,6 +91,7 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
         name="Curvature Trigger",
         default=0.1,
         min=0.0, max=1.0,
+        step=0.01, precision=2,
         description="Curvature threshold to start subdivision.",
     )
 
@@ -89,6 +99,7 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
         name="Max Subdiv",
         default=4,
         min=0, max=10,
+        step=1, precision=1,
         description="Maximum subdivision depth.",
     )
 
@@ -96,6 +107,7 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
         name="Bisect Iters",
         default=5,
         min=0, max=20,
+        step=1, precision=1,
         description="Bisection iterations per subdivision.",
     )
 
@@ -103,6 +115,7 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
         name="Adaptive Min Step",
         default=0.00001,
         min=1e-07, max=0.1,
+        step=0.000001, precision=7,
         description="Smallest step size during adaptation.",
     )
 
@@ -110,6 +123,7 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
         name="INSIGHT Accept Margin",
         default=0.01,
         min=0.0, max=1.0,
+        step=0.01, precision=2,
         description="Margin for INSIGHT plane acceptance.",
     )
 
@@ -139,13 +153,14 @@ class LuxCoreGRINProps(bpy.types.PropertyGroup):
         default=0.02,
         min=0.0, max=0.50,
         soft_min=0.0, soft_max=0.1,
-        step=0.01, precision=4,
+        step=0.001, precision=4,
         description="Extra barycentric tolerance for near-edge acceptance",
     )
 
     stitch_max_probes: bpy.props.IntProperty(
         name="Max Probes",
         default=3, min=0, max=8,
+        step=1, precision=1,
         description="How many neighbor triangles to try when stitching",
     )
 

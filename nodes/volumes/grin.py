@@ -162,16 +162,6 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
 
     preview_image: PointerProperty(type=bpy.types.Image)
 
-    stepSize: FloatProperty(update=utils_node.force_viewport_update,
-                        name='RK4 Curve Step Size',
-                        default=0.01, min=0.00001,
-                        description="Step Size in blender units for RK4 Path Resolution")
-
-    stepLimit: FloatProperty(update=utils_node.force_viewport_update,
-                        name='RK4 Curve Step Limit',
-                        default=1000, min=3,
-                        description="Stepper Limit for Curved Path Integrator. Max Distance Limit RK4 Path Detector will halt to cap processing time per ray.")
-
     invert_polarity: BoolProperty(
         name="Invert GRIN Polarity",
         default=False,
@@ -268,6 +258,8 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
         self.draw_common_buttons(context, layout)
         col = layout.column(align=True)
         if any(k in self.keys() for k in (
+            "stepSize",
+            "stepLimit",
             "stitch_plane_factor",
             "stitch_bary_margin",
             "stitch_max_probes",
@@ -308,11 +300,6 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
             box_beta.prop(self, "gamma_y")
             box_beta.prop(self, "gamma_z")
 
-        box_rk4 = layout.box()
-        box_rk4.label(text="RK4")
-        box_rk4.prop(self, "stepSize")
-        box_rk4.prop(self, "stepLimit")
-
         layout.prop(self, "profile_type")
         layout.prop(self, "invert_polarity")
         # Symbolic flair: red = inverted, blue = default
@@ -336,9 +323,6 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
             gamma_vals = [1.0, 1.0, 1.0]
             beta_val = 2.0
 
-        stepsize = self.stepSize
-        numsteps = self.stepLimit
-
         definitions = {
             "type": "grin",
             "grin.iormin": [self.ior_inner] * 3,
@@ -349,8 +333,6 @@ class LuxCoreNodeVolGRIN(LuxCoreNodeVolume, bpy.types.Node):
             "grin.profile": self.profile_type.lower(),
             "grin.beta": beta_val,
             "grin.gamma": gamma_vals,
-            "grin.stepsize": stepsize,
-            "grin.numsteps": numsteps,
             "grin.invert": 1 if self.invert_polarity else 0,
         }
         self.export_common_inputs(exporter, depsgraph, props, definitions)
